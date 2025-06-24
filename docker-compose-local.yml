@@ -1,0 +1,22 @@
+# docker-compose.yml 수정
+services:
+  # MySQL 서비스 추가
+
+  nextjs-app:
+    container_name: nextjs-app
+    image: nextjs-app:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile_local
+      args:
+        - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dist:/app
+    networks:
+      - nextjs_network
+
+networks:
+ nextjs_network:
+    driver: bridge
