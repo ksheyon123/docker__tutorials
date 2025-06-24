@@ -1,0 +1,40 @@
+# docker-compose-run-only.yml
+services:
+  nextjs-runtime:
+    container_name: nextjs-runtime
+    image: nextjs-runtime:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile_run_only
+      args:
+        - NODE_ENV=production
+    volumes:
+      - nextjs-build:/build:ro  # 빌드 결과물 읽기 전용으로 마운트
+    ports:
+      - "3000:3000"
+    networks:
+      - nextjs_network
+    command: >
+      sh -c "
+        echo 'Waiting for build artifacts...' &&
+        while [ ! -f /build/.next/BUILD_ID ]; do
+          echo 'Build artifacts not ready yet, waiting...' &&
+          sleep 2;
+        done &&
+        echo 'Build artifacts found, copying to app directory...' &&
+        cp -r /build/.next /app/ &&
+        cp -r /build/public /app/ &&
+        cp /build/package*.json /app/ &&
+        echo 'Installing production dependencies...' &&
+        npm ci --only=production &&
+        echo 'Starting Next.js application...' &&
+        npm start
+      "
+
+volumes:
+  nextjs-build:  # 볼륨이 없으면 자동 생성
+    driver: local
+
+networks:
+ nextjs_network:
+    driver: bridge

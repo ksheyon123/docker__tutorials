@@ -1,0 +1,22 @@
+# docker-compose-build-only.yml
+services:
+  nextjs-build:
+    container_name: nextjs-build
+    image: nextjs-build:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile_build_only
+      args:
+        - NODE_ENV=development
+    volumes:
+      - nextjs-build:/build  # 빌드 결과물을 저장할 볼륨 마운트
+    networks:
+      - nextjs_network
+
+volumes:
+  nextjs-build:  # 빌드 결과물을 저장할 볼륨
+    driver: local
+
+networks:
+ nextjs_network:
+    driver: bridge

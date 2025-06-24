@@ -1,0 +1,21 @@
+# Dockerfile_build_only - 빌드 결과물을 볼륨에 저장
+FROM node:20-alpine
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# package.json과 package-lock.json 복사
+COPY package*.json ./
+
+# 모든 의존성 설치 (개발 의존성 포함)
+RUN npm ci
+
+# 애플리케이션 코드 복사
+COPY . .
+
+# Next.js 빌드
+RUN npm run build
+
+# 빌드 결과물과 필요한 파일들을 볼륨으로 복사하는 명령어
+# 컨테이너가 실행될 때 볼륨에 파일들을 복사
+CMD ["sh", "-c", "cp -r .next /build/ && cp -r public /build/ && cp -r package*.json /build/ && cp -r next.config.ts /build/ && echo 'Build artifacts copied to volume'"]

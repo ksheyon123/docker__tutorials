@@ -1,0 +1,14 @@
+# Dockerfile_run_only - 빌드된 결과물로 실행
+FROM node:20-alpine
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 환경 변수 설정
+ENV NODE_ENV=production
+
+# 포트 노출
+EXPOSE 3000
+
+# 기본 CMD (docker-compose에서 override됨)
+CMD ["npm", "start"]
