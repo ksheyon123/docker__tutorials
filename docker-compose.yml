@@ -1,0 +1,18 @@
+# docker-compose.yml 수정
+services:
+  nextjs-app:
+    container_name: nextjs-app
+    image: nextjs-app:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile_basic
+      args:
+        - NODE_ENV=development
+    restart: always
+    networks:
+      - nextjs-network
+
+# 네트워크 정의 (선택사항)
+networks:
+  nextjs-network:
+    driver: bridge
